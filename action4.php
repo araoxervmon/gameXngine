@@ -23,7 +23,10 @@
 		<?php require "config.php";
 		$searchID= $_POST['searchID'];
 		$sql=$dbo->prepare("SELECT * FROM game_titles WHERE title LIKE '" .$searchID. "%'");
+		$start = microtime(true);
 		$sql->execute();
+		$end = microtime(true);
+		
 		$result = $sql->fetchAll();
 		?>
 
@@ -33,7 +36,7 @@
         <table id="myTable" class="table table-hover table-bordered" >  
           <thead>
             <tr>
-              <th>Your Search Result</th>
+              <th><?php echo "About ".$sql->rowCount(). " results Time took (" . ($end - $start) . ") seconds."; ?></th>
             </tr>
           </thead>
 	<?php 

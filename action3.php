@@ -1,259 +1,256 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Video Games</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" />
+<head>
+<link rel="icon" href="images/favicon.png" type="image/png" sizes="16x16">
+    <meta charset="utf-8">
+    <title>Game Search Engine</title>
+    <link rel="stylesheet" type="text/css"  href="css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/nv.d3.css">
+    <link rel="stylesheet" href="css/jquery.dataTables.min.css"></style>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/d3.min.js" charset="utf-8"></script>
+    <script src="js/nv.d3.js"></script>
+    <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+</head>
 </head>
 
 	<body>
-		<div id="container">
-			<div id="header">
-				<div id="header-bottom">&nbsp;</div> 
-			</div>
-			<div id="main-content"  >
-					<?php
+		<?php require "config.php";
+		$searchID= $_POST['searchID'];
+		$sql=$dbo->prepare("SELECT * FROM game_titles WHERE title LIKE '" .$searchID. "%'");
+		$sql->execute();
+		$result = $sql->fetchAll();
+		?>
 
-						//server credential
-						$serverName = "localhost";
-						$userName = "root";
-						$password = "root";
-						$dbname = "dbproject";
+		<div class="container">
+	<div class="row">
+      <div class="table-responsive">
+        <table id="myTable" class="table table-hover table-bordered" >  
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Condition</th>
+              <th>Game Type</th>
+              <th>Gamebox</th>
+            </tr>
+          </thead>
+	<?php 
+		foreach($result as $row) {
+			$id = $row['gameId'];
+   			$title = $row['title'];
+   			$condition = $row['cond'];
+   			$gameType = $row['game_type'];
+   			$gameBox = $row['game_box'];
+	
+	?>
+          <tbody>
+            <tr>
+              <td><?php echo $id; ?></td>
+              <td><?php echo $title; ?></td>
+              <td><?php echo $condition; ?></td>
+              <td><?php echo $gameType; ?></td>
+              <td><?php echo $gameBox; ?></td>
+            </tr>
+          </tbody>
+	<?php
+	}
+	?>
+	</table>   
+      </div>
+      <div class="col-md-12 text-center">
+      <ul class="pagination pagination-lg pager" id="myPager"></ul>
+      </div>
+</div>
+</div>
+<style>
 
-						$link = mysqli_connect($serverName, $userName, $password, $dbname );
+#chart svg {
+  height: 400px;
+}
 
-						//localhost connection
-						if (!$link) {
-								die('Could not connect to the database.\n\n ' . mysql_error());
-						}
-						
-						echo 'Connected to the server successfully'."<br><br>";
+</style>
 
-						//database - project 2 connection 
-					/*	$db_selected = mysql_select_db("dbproject" , $link );
-						
-						if (!$db_selected) {
-							die ('Can\'t use project2 : \n\n' . mysql_error());
-						}
 
-						echo 'Connected to the database successfully.'."<br><br>";*/
-
-						//based on post data from the front end we can decide which query needs to be executed. 
-						if(isset($_POST["1"]) )
-						{
-							$query1 = "select  g.title, c.consoleName   from game_titles g, console c
-										  where c.consoleId = g.consoleId;";
-							
-							echo "<h2>The number of unique games per system </h2><br>";	
-							
-							echo "<table border='1'> 
-									<tr> 
-										<th> Title </th> 
-										<th> Console Name </th>					
-									</tr>";					  
-						
-							//executing query
-							$query1Data = mysqli_query($query1);
-							
-							if($query1Data) {
-								// output data of each row
-								while($row = mysql_fetch_array($query1Data)) {
-									
-								echo "<tr>"; 
-									echo "<td>" . $row["title"] . "</td>"; 
-									echo "<td>" . $row["consoleName"]."</td>";			
-								echo "</tr>";
-							  }
-							  
-							} else {
-								echo "0 results";
-							}
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-						}elseif( isset($_POST["2"]))
-						{
-							$query2 = "select title from game_titles group by title having count(title) > 1;";
-							
-							echo "<h2>A list with the duplicate games in the collection</h2><br>";
-							echo "<table border='1'> 
-									<tr> 
-										<th> Title </th>										
-									</tr>";
-									
-							//executing query
-							$query2Data = mysqli_query($query2);
-							
-							if($query2Data) {
-								// output data of each row
-								while($row = mysql_fetch_array($query2Data)) {
-									echo "<tr>"; 
-										echo "<td>" . $row["title"] . "</td>"; 
-									echo "</tr>";
-								}
-							} else {
-								echo "0 results";
-							}
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-						}elseif(isset($_POST["3"]))
-						{
-							
-							$query3 = "select sum(gameMV) from game_finance;";
-						
-							$query3Data = mysqli_query($query3);
-							echo "<h2>The total cost of the person’s collection </h2><br>";
-							echo "<table border='1'> 
-									<tr> 
-										<th> Sum of Market price  </th>								
-									</tr>";
-									
-							//executing query
-							if($query3Data) {
-								// output data of each row
-								$row = mysql_fetch_row($query3Data);
-										echo "<tr>"; 
-											echo "<td>" . $row[0] . "</td>"; 
-										echo "</tr>";				
-							  
-							} else {
-								echo "0 results";
-							}
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-						}elseif(isset($_POST["4"]))
-						{
-							
-					 
-							 $query4 = "select IF(game_inst = 'N' or game_box = 'N', title,'') as incomplete_games,
-											   IF(game_inst = 'Y' and game_box = 'Y', title,'') as complete_games
-											   from game_titles;";
-						
-							//executing query		
-							$query4Data = mysqli_query($query4);
-							
-							echo "<h2>The collector’s complete games and the games missing something (box and/or manual)</h2> <br><br>";
-							echo "<table border='1'> 
-									<tr> 
-										<th> Incomplete Games name </th> 
-										<th> Complete Games name </th>					
-									</tr>";
-							
-							if($query4Data) {
-								// output data of each row
-								while($row = mysql_fetch_array($query4Data)) {
-									echo "<tr>"; 
-											echo "<td>" . $row["incomplete_games"] . "</td>";
-											echo "<td>" . $row["complete_games"] . "</td>";	
-									echo "</tr>";			
-								  }
-							} else {
-								echo "0 results";
-							}
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-
-						}elseif( isset($_POST["5"]))
-						{
-							$query5 = "select g.title from game_titles g, game_finance f 
-									   where g.gameId = f.gameId and 
-									   f.gameMV = (select max(gameMV) from game_finance);";
-						
-							//executing query
-							$query5Data = mysqli_query($query5);
-								
-							echo "<h2>The collector’s most expensive game (based on the current market value)</h2> <br><br>"; 			
-							echo "<table border='1'> 
-									<tr> 
-										<th> Title </th>										
-									</tr>";
-							
-							if($query5Data) {
-								// output data of each row
-								while($row = mysql_fetch_array($query5Data)) {
-								
-								echo "<tr>"; 
-											echo "<td>" . $row["title"]. "</td>";							
-								echo "</tr>";		
-							  }
-							} else {
-								echo "0 results";
-							}		
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-						
-						}elseif( isset($_POST["6"]))
-						{
-							$query6 = "select g.title from game_titles g , game_finance f
-									   where g.gameId = f.gameId and 
-									   f.purchasePrice < f.gameMV";
-						
-						    //executing query
-							$query6Data = mysqli_query($query6);		
-							echo "<h2>The games that the collector purchased for a price lower than the current market price </h2> <br>"; 
-							
-							echo "<table border='1'> 
-									<tr> 
-										<th> Title </th>									
-									</tr>";
-									
-							if($query6Data) {
-								// output data of each row
-								while($row = mysql_fetch_array($query6Data)) {
-								
-								echo "<tr>"; 
-											echo "<td>" . $row["title"]. "</td>";							
-								echo "</tr>";			
-							  }
-							} else {
-								echo "0 results";
-							}
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-
-						}elseif( isset($_POST["7"]))
-						{
-							$query7 = "select g.title, (f.gameMV - f.purchasePrice) as increase_value 
-									   from game_titles g ,game_finance f
-									   where g.gameId = f.gameId and 
-									   (f.gameMV - f.purchasePrice) = (select max(gameMV - purchasePrice) from game_finance);";
-										  
-							//executing query
-							$query7Data = mysqli_query($query7);
-							echo "<h2>The game that has the highest increase in value (current value minus money paid) for and what is this increase.</h2><br>";
-							
-							echo "<table border='1'> 
-									<tr> 
-										<th> Title </th> 
-										<th> Increased value </th>					
-									</tr>";
-							
-							if($query7Data) {
-								// output data of each row
-								while($row = mysql_fetch_array($query7Data)) {
-								
-								echo "<tr>"; 
-											echo "<td>" . $row["title"]. "</td>";
-											echo "<td>" . $row["increase_value"]. "</td>";						
-								echo "</tr>";
-							  }
-							} else {
-								echo "0 results";
-							}
-							echo "</table>";
-							echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-						
-						}else
-						{
-							echo "Nothing has entered...pls enter the appropriate query";
-						}
-						
-						mysql_close($link);
-					?>
-					</div>
-			<div class="clearfloat" />
-			<div id="footer">
-				<p> videogames   Copyright &copy 2012  |  All Rights Reserved</p>
-			</div>		
-		</div>
-	</body>
+<div id="chart">
+  <svg></svg>
+</div>
+</body>
 </html>
+<script>
+$(document).ready(function(){$.fn.pageMe = function(opts){
+    var $this = this,
+        defaults = {
+            perPage: 7,
+            showPrevNext: false,
+            hidePageNumbers: false
+        },
+        settings = $.extend(defaults, opts);
+    
+    var listElement = $this;
+    var perPage = settings.perPage; 
+    var children = listElement.children();
+    var pager = $('.pager');
+    
+    if (typeof settings.childSelector!="undefined") {
+        children = listElement.find(settings.childSelector);
+    }
+    
+    if (typeof settings.pagerSelector!="undefined") {
+        pager = $(settings.pagerSelector);
+    }
+    
+    var numItems = children.size();
+    var numPages = Math.ceil(numItems/perPage);
+
+    pager.data("curr",0);
+    
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+    }
+    
+    var curr = 0;
+    while(numPages > curr && (settings.hidePageNumbers==false)){
+        $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
+        curr++;
+    }
+    
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+    }
+    
+    pager.find('.page_link:first').addClass('active');
+    pager.find('.prev_link').hide();
+    if (numPages<=1) {
+        pager.find('.next_link').hide();
+    }
+  	pager.children().eq(1).addClass("active");
+    
+    children.hide();
+    children.slice(0, perPage).show();
+    
+    pager.find('li .page_link').click(function(){
+        var clickedPage = $(this).html().valueOf()-1;
+        goTo(clickedPage,perPage);
+        return false;
+    });
+    pager.find('li .prev_link').click(function(){
+        previous();
+        return false;
+    });
+    pager.find('li .next_link').click(function(){
+        next();
+        return false;
+    });
+    
+    function previous(){
+        var goToPage = parseInt(pager.data("curr")) - 1;
+        goTo(goToPage);
+    }
+     
+    function next(){
+        goToPage = parseInt(pager.data("curr")) + 1;
+        goTo(goToPage);
+    }
+    
+    function goTo(page){
+        var startAt = page * perPage,
+            endOn = startAt + perPage;
+        
+        children.css('display','none').slice(startAt, endOn).show();
+        
+        if (page>=1) {
+            pager.find('.prev_link').show();
+        }
+        else {
+            pager.find('.prev_link').hide();
+        }
+        
+        if (page<(numPages-1)) {
+            pager.find('.next_link').show();
+        }
+        else {
+            pager.find('.next_link').hide();
+        }
+        
+        pager.data("curr",page);
+      	pager.children().removeClass("active");
+        pager.children().eq(page+1).addClass("active");
+
+    
+    }
+};
+
+$(document).ready(function(){
+    
+  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+    
+});
+});
+
+//Regular pie chart example
+nv.addGraph(function() {
+  var chart = nv.models.pieChart()
+      .x(function(d) { return d.label })
+      .y(function(d) { return d.value })
+      .showLabels(true);
+
+    d3.select("#chart svg")
+        .datum(exampleData())
+        .transition().duration(350)
+        .call(chart);
+
+  return chart;
+});
+
+//Donut chart example
+nv.addGraph(function() {
+  var chart = nv.models.pieChart()
+      .x(function(d) { return d.label })
+      .y(function(d) { return d.value })
+      .showLabels(true)     //Display pie labels
+      .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
+      .labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
+      .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
+      .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
+      ;
+
+    d3.select("#chart2 svg")
+        .datum(exampleData())
+        .transition().duration(350)
+        .call(chart);
+
+  return chart;
+});
+
+var aa = new Array();
+var bb = new Array();
+var cc = 
+	[
+	
+<?php 
+	foreach($result as $row) { 
+		$id = $row['gameId'];
+   		$title = $row['title'];
+   		$condition = $row['cond'];
+   		$gameType = $row['game_type'];
+   		$gameBox = $row['game_box'];
+	
+	?>
+	{
+        	"label" : aa.push(<?php echo "'$title'"?>),
+        	"value" : bb.push(<?php echo $id?>)
+	},
+	<?php } ?> 
+];
+//Pie chart example data. Note how there is only a single array of key-value pairs.
+
+function exampleData() {
+  return cc;
+}
+</script>
