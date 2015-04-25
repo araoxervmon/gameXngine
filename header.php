@@ -24,11 +24,11 @@
 		        <li class="dropdown">
 		            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Game Console<b class="caret"></b></a>
 		            <ul role="menu" class="dropdown-menu">
-		                <li><a href="#">Xbox One</a></li>
-		                <li><a href="#">Xbox 360</a></li>
-		                <li><a href="#">PS 4</a></li>
-		                <li><a href="#">PS 3</a></li>
-		                <li><a href="#">PC</a></li>
+		                <li><a href="xbox_one.php">Xbox One</a></li>
+		                <li><a href="xbox.php">Xbox 360</a></li>
+		                <li><a href="ps_4.php">PS 4</a></li>
+		                <li><a href="ps_3.php">PS 3</a></li>
+		                <li><a href="pc.php">PC</a></li>
 		             </ul>
 		        </li>
 		        <li class="dropdown">

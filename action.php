@@ -45,6 +45,7 @@
 			</table>
 		</div>
 	</body>
+<h2> Types of Genres </h2>
 <div id="chart">
   <svg></svg>
 </div>

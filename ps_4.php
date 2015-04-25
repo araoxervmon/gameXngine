@@ -22,11 +22,10 @@
 	<body>
 		<?php require "config.php";
 		 include 'header.php'; 
-		$sql=$dbo->prepare("SELECT gameName, publisher FROM `gamelist` WHERE ratings> 9;");
+		$sql=$dbo->prepare("SELECT `gameName`, `publisher` FROM `gamelist` left join console on gamelist.consoleId = console.consoleId where console.consoleId = 3 group by gameName ");
 		$start = microtime(true);
 		$sql->execute();
 		$end = microtime(true);
-		
 		$result = $sql->fetchAll();
 		?>
 
@@ -50,7 +49,7 @@
               <td>
 		<div class="well well-sm"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1>Title: <?php echo $gameName; ?> / Publisher: <?php echo $publisher; ?></h1>
+					<h1>Game Name: <?php echo $gameName; ?> / Publisher: <?php echo $publisher; ?></h1>
 					</div></div></td>
             </tr>
           </tbody>
@@ -172,8 +171,9 @@ $(document).ready(function(){$.fn.pageMe = function(opts){
 
 $(document).ready(function(){
     
-  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:20});
     
 });
 });
+
 </script>

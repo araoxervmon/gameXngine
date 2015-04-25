@@ -49,12 +49,11 @@
           <tbody>
             <tr>
               <td>
-		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
+		<div class="well well-sm"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1>Game Name: <?php echo $gameName; ?> </h1>
-					<h2>Publisher Name: <?php echo $publisher; ?></h2>
-					<h2>Console Name: <?php echo $consoleName; ?></h2>
-					</div></div><hr></td>
+					<h2>Game Name: <?php echo $gameName; ?> </h2>
+					<h2>Publisher Name: <?php echo $publisher; ?> / Console Name: <?php echo $consoleName; ?></h2>
+					</div></div></td>
             </tr>
           </tbody>
 	<?php

@@ -51,11 +51,10 @@
           <tbody>
             <tr>
               <td>
-		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
+		<div class="well well-sm"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1>Publisher Name: <?php echo $publisher; ?> </h1>
-					<h1>Number of Games: <?php echo $tot; ?></h1>
-					</div></div><hr></td>
+					<h1>Publisher Name: <?php echo $publisher; ?> / Number of Games: <?php echo $tot; ?></h1>
+					</div></div></td>
             </tr>
           </tbody>
 	<?php
