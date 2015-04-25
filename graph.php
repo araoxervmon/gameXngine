@@ -13,161 +13,109 @@
     <script src="js/nv.d3.js"></script>
 </head>
 <body>
-    <style>
-        text {
-            font: 12px sans-serif;
-        }
-        svg {
-            display: block;
-        }
-        html, body, #chart1, svg {
-            margin: 0px;
-            padding: 0px;
-            height: 100%;
-            width: 100%;
-        }
-    </style>
-<div id="chart1">
-<svg></svg>
+	<?php require "config.php";
+		$sql=$dbo->prepare("SELECT count(gameName) as gamecount, console.consoleName as consoleName FROM `gamelist` left join 			console on gamelist.consoleId = console.consoleId group by consoleName ");
+		$sql->execute();
+		$sql1=$dbo->prepare("SELECT gameName,ratings FROM gamelist WHERe ratings > 9.5 LIMIT 10");
+		$sql1->execute();
+		$result = $sql->fetchAll();
+		$result1 = $sql1->fetchAll();
+		?>
+<h2>Console Types</h2>
+<div id="chart">
+  <svg></svg>
 </div>
-<svg id="test1" class="mypiechart"></svg>
+<h2>Top 10 Games</h2>
+<div id="topchart">
+  <svg></svg>
+</div>
 
+    <style>
+       
+#chart svg {
+  height: 500px;
+}
+#topchart svg {
+  width: 100%;
+  height: 500px;
+}
+
+    </style>
 <script>
-    historicalBarChart = [
-        {
-            key: "Cumulative Return",
-            values: [
-                {
-                    "label" : "xbox" ,
-                    "value" : 29.765957771107
-                } ,
-                {
-                    "label" : "PC" ,
-                    "value" : 40
-                } ,
-                {
-                    "label" : "PSP" ,
-                    "value" : 32.807804682612
-                } ,
-                {
-                    "label" : "Wii" ,
-                    "value" : 96.45946739256
-                } ,
-                {
-                    "label" : "Others" ,
-                    "value" : 20.19434030906893
-                } ,
-            ]
-        }
-    ];
+//Regular pie chart example
+nv.addGraph(function() {
+  var chart = nv.models.pieChart()
+      .x(function(d) { return d.label })
+      .y(function(d) { return d.value })
+      .showLabels(true);
 
-    nv.addGraph(function() {
-        var chart = nv.models.discreteBarChart()
-            .x(function(d) { return d.label })
-            .y(function(d) { return d.value })
-            .staggerLabels(true)
-            //.staggerLabels(historicalBarChart[0].values.length > 8)
-            .tooltips(false)
-            .showValues(true)
-            .duration(250)
-            ;
+    d3.select("#chart svg")
+        .datum(exampleData())
+        .transition().duration(350)
+        .call(chart);
 
-        d3.select('#chart1 svg')
-            .datum(historicalBarChart)
-            .call(chart);
+  return chart;
+});
 
-        nv.utils.windowResize(chart.update);
-        return chart;
-    });
+var cc = 
+	[
+	
+<?php 
+	foreach($result as $row) { 
+		$gamecount = $row['gamecount'];
+   		$consoleName = $row['consoleName'];
+	
+	?>
+	{
+        	"label" : <?php echo "'$consoleName'"?>,
+        	"value" :<?php echo $gamecount?>
+	},
+	<?php } ?> 
+];
+//Pie chart example data. Note how there is only a single array of key-value pairs.
+
+function exampleData() {
+  return cc;
+}
 
 
-    var testdata = [
-        {key: "One", y: 5},
-        {key: "Two", y: 2},
-        {key: "Three", y: 9},
-        {key: "Four", y: 7},
-        {key: "Five", y: 4},
-        {key: "Six", y: 3},
-        {key: "Seven", y: 0.5}
-    ];
-    var testdata2 = [
-        {key: "One", y: 5},
-        {key: "Two", y: 2},
-        {key: "Three", y: 9},
-        {key: "Four", y: 7},
-        {key: "Five", y: 4},
-        {key: "Six", y: 3},
-        {key: "Seven", y: 0.5}
-    ];
+nv.addGraph(function() {
+  var chart = nv.models.discreteBarChart()
+      .x(function(d) { return d.label })    //Specify the data accessors.
+      .y(function(d) { return d.value })
+     .showValues(true)
+     .staggerLabels(true);
 
-    var height = 350;
-    var width = 350;
+  d3.select('#topchart svg')
+      .datum(topData())
+      .call(chart);
 
-    nv.addGraph(function() {
-        var chart = nv.models.pieChart()
-            .x(function(d) { return d.key })
-            .y(function(d) { return d.y })
-            .width(width)
-            .height(height);
+  nv.utils.windowResize(chart.update);
 
-        d3.select("#test1")
-            .datum(testdata2)
-            .transition().duration(1200)
-            .attr('width', width)
-            .attr('height', height)
-            .call(chart);
+  return chart;
+});
+var dd = 
+	[{
+	key: "Cumulative Return",
+	values:[
+	
+<?php 
+	foreach($result1 as $rows) { 
+		$gameName = $rows['gameName'];
+   		$ratings = $rows['ratings'];
+	
+	?>
+	{
+        	"label" :<?php echo "'$gameName'"  ?>,
+        	"value" : <?php echo $ratings ?>
+	},
+	<?php } ?> 
+]}];
+//Pie chart example data. Note how there is only a single array of key-value pairs.
 
-        // update chart data values randomly
-        setInterval(function() {
-            testdata2[0].y = Math.floor(Math.random() * 10);
-            testdata2[1].y = Math.floor(Math.random() * 10);
-            chart.update();
-        }, 4000);
-
-        return chart;
-    });
-
-    nv.addGraph(function() {
-        var chart = nv.models.pieChart()
-            .x(function(d) { return d.key })
-            .y(function(d) { return d.y })
-            //.labelThreshold(.08)
-            //.showLabels(false)
-            .color(d3.scale.category20().range().slice(8))
-            .growOnHover(false)
-            .tooltipContent(function(key, y, e, graph) {
-                return '<h3 style="padding: 5px; background-color: '
-                        + e.color + '"><strong>Yo, the value is</strong></h3>'
-                        + '<p style="padding:5px;">' +  y + '</p>';
-            })
-            .width(width)
-            .height(height);
-
-        // make it a half circle
-        chart.pie
-            .startAngle(function(d) { return d.startAngle/2 -Math.PI/2 })
-            .endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
-
-        // MAKES LABELS OUTSIDE OF DONUT
-        //chart.pie.donutLabelsOutside(true).donut(true);
-
-        d3.select("#test2")
-            .datum(testdata)
-            .transition().duration(1200)
-            .attr('width', width)
-            .attr('height', height)
-            .call(chart);
-
-        // disable and enable some of the sections
-        var is_disabled = false;
-        setInterval(function() {
-            chart.dispatch.changeState({disabled: {2: !is_disabled, 4: !is_disabled}});
-            is_disabled = !is_disabled;
-        }, 3000);
-
-        return chart;
-    });
-
+function topData() {
+  return dd;
+}
 </script>
 </body>
 </html>

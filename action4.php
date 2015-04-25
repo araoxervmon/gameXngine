@@ -21,8 +21,9 @@
 
 	<body>
 		<?php require "config.php";
+		 include 'header.php'; 
 		$searchID= $_POST['searchID'];
-		$sql=$dbo->prepare("SELECT * FROM game_titles WHERE title LIKE '" .$searchID. "%'");
+		$sql=$dbo->prepare("SELECT distinct gameName FROM gamelist WHERE gameName LIKE '" .$searchID. "%'");
 		$start = microtime(true);
 		$sql->execute();
 		$end = microtime(true);
@@ -41,11 +42,11 @@
           </thead>
 	<?php 
 		foreach($result as $row) {
-			$id = $row['gameId'];
-   			$title = $row['title'];
-   			$condition = $row['cond'];
-   			$gameType = $row['game_type'];
-   			$gameBox = $row['game_box'];
+			$id = $row['id'];
+   			$title = $row['gameName'];
+   			$condition = $row['publisher'];
+   			$gameType = $row['ratings'];
+   			$gameBox = $row['releaseDate'];
 	
 	?>
           <tbody>

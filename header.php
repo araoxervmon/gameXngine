@@ -18,7 +18,7 @@
 		<!-- Collection of nav links, forms, and other content for toggling -->
 		<div id="navbarCollapse" class="collapse navbar-collapse">
 		    <ul class="nav navbar-nav">
-		        <li class="active"><a href="#">Home</a></li>
+		        <li class="active"><a href="/dproject">Home</a></li>
    			<li><a href="action.php">Genres</a></li>
 			
 		        <li class="dropdown">
@@ -34,12 +34,11 @@
 		        <li class="dropdown">
 		            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Data Drill Down<b class="caret"></b></a>
 		            <ul role="menu" class="dropdown-menu">
-		                <li><a href="#">Top Rated</a></li>
-		                <li><a href="#">Released Date</a></li>
-		                <li><a href="#">Publisher</a></li>
-		                <li><a href="#">Console</a></li>
-		                <li><a href="#">Xbox vs PSP</a></li>
-		                <li><a href="#">Complete Collection</a></li>
+		                <li><a href="top_rated.php">Top Rated</a></li>
+		                <li><a href="publisher.php">Publisher</a></li>
+		                <li><a href="console.php">Console Type</a></li>
+		                <li><a href="topgross.php">Top Grossing Games</a></li>
+		                <li><a href="complete.php">Complete Collection</a></li>
 		            </ul>
 		        </li>
 		    </ul>
@@ -47,7 +46,7 @@
 		        <div class="form-group">
 		            <input type="text" placeholder="Search" class="form-control" name="searchID" id="searchID">
 		        </div>
-			<button type="submit" class="btn btn-default">Submit</button>
+			<button type="submit" class="btn btn-default">Search</button>
 	 		<!--<button type="submit" class="btn btn-default" onclick="Search();">Submit</button>-->
 		    </form>
 		</div>

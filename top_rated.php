@@ -22,9 +22,11 @@
 	<body>
 		<?php require "config.php";
 		 include 'header.php'; 
-		$searchID= $_POST['searchID'];
-		$sql=$dbo->prepare("SELECT * FROM game_titles WHERE title LIKE '" .$searchID. "%'");
+		$sql=$dbo->prepare("SELECT gameName, publisher FROM `gamelist` WHERE ratings> 9;");
+		$start = microtime(true);
 		$sql->execute();
+		$end = microtime(true);
+		
 		$result = $sql->fetchAll();
 		?>
 
@@ -34,29 +36,23 @@
         <table id="myTable" class="table table-hover table-bordered" >  
           <thead>
             <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Condition</th>
-              <th>Game Type</th>
-              <th>Gamebox</th>
+              <th><?php echo "About ".$sql->rowCount(). " results Time took (" . ($end - $start) . ") seconds."; ?></th>
             </tr>
           </thead>
 	<?php 
 		foreach($result as $row) {
-			$id = $row['gameId'];
-   			$title = $row['title'];
-   			$condition = $row['cond'];
-   			$gameType = $row['game_type'];
-   			$gameBox = $row['game_box'];
+   			$gameName = $row['gameName'];
+   			$publisher = $row['publisher'];
 	
 	?>
           <tbody>
             <tr>
-              <td><?php echo $id; ?></td>
-              <td><?php echo $title; ?></td>
-              <td><?php echo $condition; ?></td>
-              <td><?php echo $gameType; ?></td>
-              <td><?php echo $gameBox; ?></td>
+              <td>
+		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
+					</a><div class="media-body">
+					<h1>Title: <?php echo $gameName; ?> </h1>
+					<h3>Publisher: <?php echo $publisher; ?></h3>
+					</div></div><hr></td>
             </tr>
           </tbody>
 	<?php
@@ -68,18 +64,6 @@
       <ul class="pagination pagination-lg pager" id="myPager"></ul>
       </div>
 </div>
-</div>
-<style>
-
-#chart svg {
-  height: 400px;
-}
-
-</style>
-
-
-<div id="chart">
-  <svg></svg>
 </div>
 </body>
 </html>
@@ -193,65 +177,4 @@ $(document).ready(function(){
     
 });
 });
-
-//Regular pie chart example
-nv.addGraph(function() {
-  var chart = nv.models.pieChart()
-      .x(function(d) { return d.label })
-      .y(function(d) { return d.value })
-      .showLabels(true);
-
-    d3.select("#chart svg")
-        .datum(exampleData())
-        .transition().duration(350)
-        .call(chart);
-
-  return chart;
-});
-
-//Donut chart example
-nv.addGraph(function() {
-  var chart = nv.models.pieChart()
-      .x(function(d) { return d.label })
-      .y(function(d) { return d.value })
-      .showLabels(true)     //Display pie labels
-      .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
-      .labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
-      .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
-      .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
-      ;
-
-    d3.select("#chart2 svg")
-        .datum(exampleData())
-        .transition().duration(350)
-        .call(chart);
-
-  return chart;
-});
-
-var aa = new Array();
-var bb = new Array();
-var cc = 
-	[
-	
-<?php 
-	foreach($result as $row) { 
-		$id = $row['gameId'];
-   		$title = $row['title'];
-   		$condition = $row['cond'];
-   		$gameType = $row['game_type'];
-   		$gameBox = $row['game_box'];
-	
-	?>
-	{
-        	"label" : aa.push(<?php echo "'$title'"?>),
-        	"value" : bb.push(<?php echo $id?>)
-	},
-	<?php } ?> 
-];
-//Pie chart example data. Note how there is only a single array of key-value pairs.
-
-function exampleData() {
-  return cc;
-}
 </script>
