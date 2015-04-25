@@ -51,9 +51,9 @@
               <td>
 		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1>Title: <?php echo $gameName; ?> </h1>
-					<h3>Publisher: <?php echo $publisher; ?></h3>
-					<h3>consoleName: <?php echo $consoleName; ?></h3>
+					<h1>Game Name: <?php echo $gameName; ?> </h1>
+					<h2>Publisher Name: <?php echo $publisher; ?></h2>
+					<h2>Console Name: <?php echo $consoleName; ?></h2>
 					</div></div><hr></td>
             </tr>
           </tbody>

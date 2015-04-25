@@ -23,7 +23,7 @@
 		<?php require "config.php";
 		 include 'header.php'; 
 		$searchID= $_POST['searchID'];
-		$sql=$dbo->prepare("SELECT distinct gameName FROM gamelist WHERE gameName LIKE '" .$searchID. "%'");
+		$sql=$dbo->prepare("SELECT distinct gameName,publisher, releaseDate FROM gamelist WHERE gameName LIKE '" .$searchID. "%'");
 		$start = microtime(true);
 		$sql->execute();
 		$end = microtime(true);
@@ -44,9 +44,8 @@
 		foreach($result as $row) {
 			$id = $row['id'];
    			$title = $row['gameName'];
-   			$condition = $row['publisher'];
-   			$gameType = $row['ratings'];
-   			$gameBox = $row['releaseDate'];
+   			$publisher = $row['publisher'];
+   			$releaseDate = $row['releaseDate'];
 	
 	?>
           <tbody>
@@ -54,8 +53,9 @@
               <td>
 		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1><?php echo $id; ?> : <?php echo $title; ?> </h1>
-					<h3><?php echo $condition; ?> : <?php echo $gameType; ?></h3>
+					<h1>Game Title: <?php echo $title; ?> </h1>
+					<h1>publisher : <?php echo $publisher; ?></h1>
+					<h1>Release Date : <?php echo $releaseDate; ?></h1>
 					</div></div><hr></td>
             </tr>
           </tbody>

@@ -22,7 +22,7 @@
 	<body>
 		<?php require "config.php";
 		 include 'header.php'; 
-		$sql=$dbo->prepare("SELECT  publisher, count(publisher) as tot from gamelist  group by publisher");
+		$sql=$dbo->prepare("SELECT `gameName`, `publisher` FROM `gamelist` left join gameprice on gamelist.id = gameprice.gameId where gamePrice>1500 and ratings > 7 group by gameName");
 		$start = microtime(true);
 		$sql->execute();
 		$end = microtime(true);
@@ -41,8 +41,8 @@
           </thead>
 	<?php 
 		foreach($result as $row) {
+   			$gameName = $row['gameName'];
    			$publisher = $row['publisher'];
-   			$tot = $row['tot'];
 	
 	?>
           <tbody>
@@ -50,8 +50,8 @@
               <td>
 		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1>Publisher Name: <?php echo $publisher; ?> </h1>
-					<h1>Number of Games: <?php echo $tot; ?></h1>
+					<h1>Game Name: <?php echo $gameName; ?> </h1>
+					<h3>Publisher: <?php echo $publisher; ?></h3>
 					</div></div><hr></td>
             </tr>
           </tbody>
@@ -173,7 +173,7 @@ $(document).ready(function(){$.fn.pageMe = function(opts){
 
 $(document).ready(function(){
     
-  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:20});
+  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
     
 });
 });

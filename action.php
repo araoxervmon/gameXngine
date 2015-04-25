@@ -33,6 +33,7 @@
 		</script>
 	</head>
 	<body>
+		 <?php include 'header.php'; ?>
 		<div class="container">
 			<table id="employee-grid"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
 					<thead>

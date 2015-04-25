@@ -21,7 +21,8 @@
 
 	<body>
 		<?php require "config.php";
-		$sql=$dbo->prepare("SELECT gameName, publisher FROM `gamelist` WHERE ratings> 9;");
+		 include 'header.php'; 
+		$sql=$dbo->prepare("SELECT *  FROM gamelist");
 		$start = microtime(true);
 		$sql->execute();
 		$end = microtime(true);
@@ -42,6 +43,7 @@
 		foreach($result as $row) {
    			$gameName = $row['gameName'];
    			$publisher = $row['publisher'];
+   			$releaseDate = $row['releaseDate'];
 	
 	?>
           <tbody>
@@ -49,8 +51,9 @@
               <td>
 		<div class="well"><a href="#" class="pull-left"><img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrHD8gMbTdeIpym2_4b2XZBtKbFO1XiwxrAjQZ9QQR71fiv4isoA"  class="media-object">
 					</a><div class="media-body">
-					<h1>Title: <?php echo $gameName; ?> </h1>
+					<h1>Game Name: <?php echo $gameName; ?> </h1>
 					<h3>Publisher: <?php echo $publisher; ?></h3>
+					<h3>Release Date: <?php echo $releaseDate; ?></h3>
 					</div></div><hr></td>
             </tr>
           </tbody>
@@ -172,7 +175,7 @@ $(document).ready(function(){$.fn.pageMe = function(opts){
 
 $(document).ready(function(){
     
-  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+  $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:50});
     
 });
 });
