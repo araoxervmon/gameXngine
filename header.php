@@ -19,7 +19,7 @@
 		<div id="navbarCollapse" class="collapse navbar-collapse">
 		    <ul class="nav navbar-nav">
 		        <li class="active"><a href="#">Home</a></li>
-   			<li><a href="#">Genres</a></li>
+   			<li><a href="action.php">Genres</a></li>
 			
 		        <li class="dropdown">
 		            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Game Console<b class="caret"></b></a>

@@ -1,87 +1,102 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Video Games</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-</head>
-
+<!DOCTYPE html>
+<html>
+	<title>Datatable Demo1 | CoderExample</title>
+	<head>
+  <link rel="stylesheet" type="text/css"  href="css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/nv.d3.css">
+    <link rel="stylesheet" href="css/jquery.dataTables.min.css"></style>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/d3.min.js" charset="utf-8"></script>
+    <script src="js/nv.d3.js"></script>
+    <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" language="javascript" >
+			$(document).ready(function() {
+				var dataTable = $('#employee-grid').DataTable( {
+					"processing": true,
+					"serverSide": true,
+					"ajax":{
+						url :"genres.php", // json datasource
+						type: "post",  // method  , by default get
+						error: function(){  // error handling
+							$(".employee-grid-error").html("");
+							$("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+							$("#employee-grid_processing").css("display","none");
+							
+						}
+					}
+				} );
+			} );
+		</script>
+	</head>
 	<body>
-		<div id="container">
-			<div id="header">
-				<div id="header-bottom">&nbsp;</div> 
-			</div>
-			<div id="main-content">
-			
-				<?php
-				
-				// credential 
-				$serverName = "localhost";
-				$userName = "root";
-				$password = "root";
-				$dbname = "dbproject";
-
-				$link = mysqli_connect($serverName, $userName, $password );
-
-					
-					//localhost connection
-					if (!$link) {
-							die('Could not connect to the database\n\n ' . mysql_error());
-					}
-					
-					echo 'Connected to the server successfully.'."<br><br>";
-
-					//database - project 2 connection 
-					$db_selected = mysql_select_db("dbproject" , $link );
-					
-					if (!$db_selected) {
-						die ('Can\'t use project2 : \n\n' . mysql_error());
-					}
-
-					echo 'Connected to the database successfully.'."<br><br>";
-
-					//insert data into game_titles table
-					$sql_title = "INSERT INTO game_titles (title, cond, game_type,game_inst,game_box,consoleId, categoryId)
-					VALUES ('$_POST[title]', '$_POST[condition]', '$_POST[type]','$_POST[completenessInstruction]','$_POST[completenessBox]','$_POST[console]','$_POST[category]')";
-						
-					$query_title = mysqli_query($sql_title);
-					
-					//
-					if(!$query_title)
-					{
-						die('Could not save the data in the game_title' . mysql_error());
-					}
-					echo "Data has been saved in Game Title table. <br>";
-					
-					$query_gameId = mysql_fetch_row(mysql_query("SELECT max(`gameId`) AS gameId FROM `game_titles` " ));
-					$maxGameId = $query_gameId[0] ;
-					//echo $maxGameId;					
-					
-					$sql_finance = "INSERT INTO game_finance (gameId, purchasePrice, gameMV,dateOfPurchase)
-					VALUES ($maxGameId, '$_POST[pp]','$_POST[mp]','$_POST[dob]')";
-					
-					//executing the query		
-					$query_finance = mysql_query($sql_finance);
-					
-					if(!$query_finance)
-					{
-						die('Could not save the data in the game_finance' . mysql_error());
-					}
-					
-					echo '<br>Data has been saved in Game Finance table.'."<br><br>";
-
-					echo "<br><br><br><a href='index.html'>Jump to our main page</a>";
-					
-					mysql_close($link);
-				?>
-
-			</div>
-		  
-			<div class="clearfloat" />
-			<div id="footer">
-				<p> videogames   Copyright &copy 2012  |  All Rights Reserved</p>
-			</div>
-		
+		<div class="container">
+			<table id="employee-grid"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+					<thead>
+						<tr>
+							<th>Game Name</th>
+							<th>Genres</th>
+						</tr>
+					</thead>
+			</table>
 		</div>
 	</body>
+<div id="chart">
+  <svg></svg>
+</div>
 </html>
+<style>#chart svg {
+  width: 100%;
+  height: 600px;
+}
+</style>
+<?php require "config.php";
+		$searchID= $_POST['searchID'];
+		$sql=$dbo->prepare("Select distinct gameGenre as Genre, count(gameGenre) as tot from gamelistgenres group by gameGenre");
+		$sql->execute();
+		$result = $sql->fetchAll();
+		?>
+<script>
+
+nv.addGraph(function() {
+  var chart = nv.models.discreteBarChart()
+      .x(function(d) { return d.label })    //Specify the data accessors.
+      .y(function(d) { return d.value })
+     .showValues(true);
+
+  d3.select('#chart svg')
+      .datum(exampleData())
+      .call(chart);
+
+  nv.utils.windowResize(chart.update);
+
+  return chart;
+});
+var aa = new Array();
+var bb = new Array();
+var cc = 
+	[{
+	key: "Cumulative Return",
+	values:[
+	
+<?php 
+	foreach($result as $row) { 
+		$Genre = $row['Genre'];
+   		$tot = $row['tot'];
+	
+	?>
+	{
+        	"label" :<?php echo "'$Genre'"  ?>,
+        	"value" : <?php echo $tot ?>
+	},
+	<?php } ?> 
+]}];
+//Pie chart example data. Note how there is only a single array of key-value pairs.
+
+function exampleData() {
+  return cc;
+}
+</script>
