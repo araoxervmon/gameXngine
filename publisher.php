@@ -23,11 +23,14 @@
 		<?php require "config.php";
 		 include 'header.php'; 
 		$sql=$dbo->prepare("SELECT  publisher, count(publisher) as tot from gamelist  group by publisher");
+		$sql1=$dbo->prepare("select publisher, max(ratings) as ratings from (select b.gameName, b.publisher, b.ratings, b.releaseDate from (select publisher as publisher_name, c from (select publisher, count(publisher) as c from (SELECT * FROM `gamelist`) a group by publisher) b where c != 1) a, (select * from `gamelist`) b where a.publisher_name = b.publisher union all select b.gameName, a.publisher_name, b.ratings, b.releaseDate from (select publisher, 'other' as publisher_name, c from (select publisher, count(publisher) as c from (SELECT * FROM `gamelist`) a group by publisher) b where c = 1) a, (select * from `gamelist`) b where a.publisher = b.publisher) as total where ratings != 'NR' and ratings > 9 group by publisher order by publisher");
 		$start = microtime(true);
 		$sql->execute();
+		$sql1->execute();
 		$end = microtime(true);
 		
 		$result = $sql->fetchAll();
+		$result1 = $sql1->fetchAll();
 		?>
 
 		<div class="container">
@@ -65,8 +68,18 @@
       </div>
 </div>
 </div>
+<div id="chart">
+  <svg></svg>
+</div>
 </body>
 </html>
+<style>
+
+#chart svg {
+  height: 400px;
+}
+
+</style>
 <script>
 $(document).ready(function(){$.fn.pageMe = function(opts){
     var $this = this,
@@ -177,4 +190,45 @@ $(document).ready(function(){
     
 });
 });
+
+
+nv.addGraph(function() {
+  var chart = nv.models.discreteBarChart()
+      .x(function(d) { return d.label })    //Specify the data accessors.
+      .y(function(d) { return d.value })
+     .showValues(true)
+     .staggerLabels(true);
+
+  d3.select('#chart svg')
+      .datum(exampleData())
+      .call(chart);
+
+  nv.utils.windowResize(chart.update);
+
+  return chart;
+});
+var aa = new Array();
+var bb = new Array();
+var cc = 
+	[{
+	key: "Cumulative Return",
+	values:[
+	
+<?php 
+	foreach($result1 as $rows) { 
+		$publisher = $rows['publisher'];
+   		$ratings = $rows['ratings'];
+	
+	?>
+	{
+        	"label" :<?php echo "'$publisher'"  ?>,
+        	"value" : <?php echo $ratings ?>
+	},
+	<?php } ?> 
+]}];
+//Pie chart example data. Note how there is only a single array of key-value pairs.
+
+function exampleData() {
+  return cc;
+}
 </script>
